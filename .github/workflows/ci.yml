@@ -64,7 +64,7 @@ jobs:
           cargo audit --version
 
       - name: Cargo audit
-        run: cargo audit --locked --deny
+        run: cargo --locked audit --deny
 
       - name: Run tests
         run: cargo test --verbose
@@ -75,4 +75,4 @@ jobs:
           cargo msrv --version
 
       - name: Verify rust version
-        run: cargo msrv --locked verify --output-format json --all-features
+        run: cargo --locked msrv verify --output-format json --all-features
