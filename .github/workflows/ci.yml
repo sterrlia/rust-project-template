@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cargo-bins/cargo-binstall@main
+
+      - name: Install Clippy and Rustfmt
+        run: |
+          rustup component add clippy
+          rustup component add rustfmt
+
+      - name: Lint
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Check format
+        run: cargo fmt --check
+
+      - name: Check
+        run: cargo check --verbose --all-features
+
+      - name: Install cargo-udeps
+        run: |
+          cargo binstall cargo-udeps --locked
+          cargo +nightly udeps --version --offline
+
+      - name: Check unused dependencies
+        run: cargo +nightly udeps --offline --locked
+
+      - name: Install cargo-deny
+        run: |
+          cargo binstall cargo-deny --locked
+          cargo deny --version
+
+      - name: Check licenses and sources
+        run: cargo deny check bans licenses sources --locked
+
+      - name: Install cargo-geiger
+        run: |
+          cargo binstall cargo-geiger --locked
+          cargo cargo-geiger --version --offline
+
+      - name: Check unsafe code
+        run: cargo geiger --forbid-only --locked --offline
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Install cargo-audit
+        run: |
+          cargo binstall cargo-audit --locked
+          cargo audit --version
+
+      - name: Cargo audit
+        run: cargo audit --deny
+
+      - name: Run tests
+        run: cargo test --verbose
+
+      - name: Install cargo-msrv
+        run: |
+          cargo binstall cargo-msrv --locked
+          cargo msrv --version
+
+      - name: Verify rust version
+        run: cargo msrv verify --output-format json --all-features
