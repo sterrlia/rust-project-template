@@ -33,7 +33,7 @@ jobs:
 
       - name: Install cargo-udeps
         run: |
-          cargo binstall cargo-udeps --locked
+          cargo binstall cargo-udeps --locked --ci
           cargo +nightly udeps --version --offline
 
       - name: Check unused dependencies
@@ -41,7 +41,7 @@ jobs:
 
       - name: Install cargo-deny
         run: |
-          cargo binstall cargo-deny --locked
+          cargo binstall cargo-deny --locked --ci
           cargo deny --version
 
       - name: Check licenses and sources
@@ -49,8 +49,8 @@ jobs:
 
       - name: Install cargo-geiger
         run: |
-          cargo binstall cargo-geiger --locked
-          cargo cargo-geiger --version
+          cargo binstall cargo-geiger --locked --ci
+          cargo geiger --version
 
       - name: Check unsafe code
         run: cargo geiger --forbid-only --locked --offline
@@ -60,7 +60,7 @@ jobs:
 
       - name: Install cargo-audit
         run: |
-          cargo binstall cargo-audit --locked
+          cargo binstall cargo-audit --locked --ci
           cargo audit --version
 
       - name: Cargo audit
@@ -71,7 +71,7 @@ jobs:
 
       - name: Install cargo-msrv
         run: |
-          cargo binstall cargo-msrv --locked
+          cargo binstall cargo-msrv --locked --ci
           cargo msrv --version
 
       - name: Verify rust version
