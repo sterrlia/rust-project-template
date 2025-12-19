@@ -29,7 +29,7 @@ jobs:
         run: cargo fmt --check
 
       - name: Check
-        run: cargo check --verbose --all-features
+        run: cargo check --verbose --all-features --all-targets
 
       - name: Install cargo-udeps
         run: |
@@ -37,7 +37,7 @@ jobs:
           cargo +nightly udeps --version --offline
 
       - name: Check unused dependencies
-        run: cargo +nightly udeps --offline --locked
+        run: cargo +nightly udeps --offline --locked --all-targets --all-features
 
       - name: Install cargo-deny
         run: |
@@ -45,7 +45,7 @@ jobs:
           cargo deny --version
 
       - name: Check licenses and sources
-        run: cargo deny --locked check bans licenses sources
+        run: cargo deny --all-features --locked check bans licenses sources
 
       - name: Install cargo-geiger
         run: |
@@ -53,7 +53,7 @@ jobs:
           cargo geiger --version
 
       - name: Check unsafe code
-        run: cargo geiger --forbid-only --locked --offline
+        run: cargo geiger --all-features --all-targets --forbid-only --locked --offline
 
       - name: Build
         run: cargo build --verbose
